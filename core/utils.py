@@ -3,7 +3,7 @@ import glob
 
 class DirReader():
 
-    def __init__(self, dir, test):
+    def __init__(self, dir):
         self.dir = os.path.join(os.getcwd(), dir)
 
     def readDir(self):

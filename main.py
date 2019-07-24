@@ -22,12 +22,12 @@ def run(uri, port, src, syntax):
         os.makedirs("out")
 
 
-    reader = utils.DirReader(os.path.join(os.getcwd(), src[1:]), "test")
+    reader = utils.DirReader(os.path.join(os.getcwd(), src[1:]))
     raw_files = reader.readDir()
     stripped_files = reader.readDirStripped()
 
     # write index html
-    utils.FileWriter("out/index.html", utils.HtmlBuilder(stripped_files, "test",uri, port).getPage())
+    utils.FileWriter("out/index.html", utils.HtmlBuilder(stripped_files, "Code Review Builder",uri, port).getPage())
 
     # generate others generic
     for file in raw_files:
