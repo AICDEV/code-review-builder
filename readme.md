@@ -13,7 +13,7 @@ Please make sure that you have [click](https://pypi.org/project/click/) installe
   pip install click
 ```
 
-### Run code template get
+### Run code template builder
 
 You have a few command line arguments to play with:
 
