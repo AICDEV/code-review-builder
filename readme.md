@@ -2,7 +2,7 @@
 
 ### What can this program do for you
 Sometimes it is, for some strange reason, quite helpful to convert your whole source code,
-into a html page where others can view your code. In short terms: this tool converts your
+into a html page where others can view your code. Also, there is a cool search function included. Enjoy. In short terms: this tool converts your
 source code into a html structure with syntax highlighting. Nothing more, nothing less.
 
 ### Requirements
@@ -12,6 +12,11 @@ Please make sure that you have [click](https://pypi.org/project/click/) installe
 ```text
   pip install click
 ```
+
+
+### Example
+Inline-style:
+![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
 
 ### Run code template builder
 
