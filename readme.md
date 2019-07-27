@@ -15,8 +15,8 @@ Please make sure that you have [click](https://pypi.org/project/click/) installe
 
 
 ### Example
-Inline-style:
-![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
+Preview:
+![alt text](https://github.com/AICDEV/code-review-builder/blob/master/example.png)
 
 ### Run code template builder
 
