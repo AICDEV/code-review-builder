@@ -18,11 +18,74 @@ class DirReader():
 
 
 class HtmlBuilder():
-    def __init__(self, files, name, uri, port):
+    def __init__(self, files, name, uri, port, ast):
         self.__files = files
         self.__name = name
         self.__uri = uri
         self.__port = port
+        self.__ast = ast
+
+    def getSearchFunction(self):
+        return ("""<script>
+                        const code_map = """+str(self.__ast)+""";
+                        const context = document.querySelector(".code-box");
+                        const instance = new Mark(context);
+                        const inputEl = document.getElementById("search-input");
+
+                        inputEl.onkeyup = function(event) {
+                                instance.unmark();
+                                if(inputEl.value.trim().length > 1) {
+                                    searchInDom(inputEl.value.trim());
+                                    code_map.map((entry) => {
+                                        	const file_name = entry[0];
+                                        	let foundEntry = false;
+
+                                        	if(Array.isArray(entry[1])) {
+                                        		entry[1].map((subEntry) => {
+                                        			if(Array.isArray(subEntry)) {
+                                        				for(let i=0; i < subEntry.length;i++) {
+                                        					if(subEntry[i].trim() === inputEl.value.trim()) {
+                                                                highlightLink(file_name);
+                                        					}
+                                        				}
+                                        			}
+                                        		});
+                                        	}
+                                        })
+                                } else {
+                                    unhighlight();
+                                }
+                            }
+
+                        function highlightLink(name) {
+                            const links = document.querySelectorAll(".code-link");
+                            for(let i = 0; i < links.length; i++) {
+                                let link = links[i].getAttribute("href");
+                                link = link.substring(link.lastIndexOf("/")+1, link.length);
+                                name = name.substring(name.lastIndexOf("/")+1, name.length);
+
+                                if(link === name) {
+                                    let span = document.createElement("span");
+                                    span.setAttribute("class", "span-sel");
+                                    links[i].appendChild(span);
+                                }
+                            }
+                        }
+
+                        function unhighlight() {
+                            const links = document.querySelectorAll(".code-link");
+                            for(let i = 0; i < links.length; i++) {
+                                let spanElementRemove = links[i].querySelectorAll(".span-sel");
+                                for(let a = 0; a < spanElementRemove.length; a++) {
+                                    spanElementRemove[a].remove();
+                                }
+                            }
+                        }
+
+                        function searchInDom(name) {
+                            instance.mark(name);
+                        }
+                </script>""")
 
     def getPage(self):
         doc = "<!doctype html>"
@@ -33,9 +96,9 @@ class HtmlBuilder():
 
 
     def getBody(self):
-        body = "<body><div class='content'>"
+        body = "<body><div class='top-menu'><input type='text' placeholder='Search in code' id='search-input' /></div><div class='content' id='code-content'>"
         body += self.getNav()
-        body += "</div></body>"
+        body += "</div>"+self.getSearchFunction()+"</body>"
         return body
 
     def getHeader(self):
@@ -47,6 +110,7 @@ class HtmlBuilder():
                     <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
                     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
                     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.7.0/highlightjs-line-numbers.min.js"></script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js"></script>
                     <script>hljs.initHighlightingOnLoad();</script>
                     <script>hljs.initLineNumbersOnLoad();</script>
                     <style>
@@ -71,21 +135,29 @@ class HtmlBuilder():
 
                         .navbar {
                           width: 25%;
-                          height: 100vh;
+                          height: 96vh;
                           overflow-x: hidden;
                           overflow-y: scroll;
-                          background-color: lightgray;
+                          background-color: #fff;
                           font-size: 0.75em;
                         }
 
                         .code-box {
                           width: 75%;
-                          height: 100vh;
+                          height: 96vh;
                           overflow-y: scroll;
-                          background-color: #e3e3e3e3;
+                          background-color: #1E1F29;
                           margin: 5px;
                         }
 
+                        .top-menu {
+                            height: 50px;
+                            border-bottom: 1px solid #fff;
+                            display: flex;
+                            justify-content: flew-start;
+                            align-items: center;
+                            padding: 7px;
+                        }
 
                         .hljs-ln-code {
                           padding-left: 10px !important;
@@ -106,6 +178,23 @@ class HtmlBuilder():
                         .helper-el a {
                             color: #fff;
                         }
+
+                        #search-input {
+                            width: 100%;
+                        }
+
+                        .span-sel {
+                            color: #fff;
+                            background-color: #e68217;
+                            position: absolute;
+                            width: 15px;
+                            height: 15px;
+                            text-align: center;
+                            border-radius: 50px;
+                            margin-left: 5px;
+                            font-weight: bold;
+                        }
+
                     </style>
                 </head>
                 """)
@@ -114,14 +203,14 @@ class HtmlBuilder():
         navstart = "<section class='navbar'><nav><ul>"
         for f in self.__files:
             link = self.__uri+":"+str(self.__port)+"/"+f
-            navstart += "<li><a href="+link+".html>"+f+"</a></li>"
+            navstart += "<li><a class='code-link' href="+link+".html>"+f+"</a></li>"
 
         navstart += "</ul></nav></section>"
         return navstart
 
 class HtmlPageBuilder(HtmlBuilder):
-    def __init__(self, files, name, raw_file, uri, port, syntax):
-        super().__init__(files, name, uri, port)
+    def __init__(self, files, name, raw_file, uri, port, syntax, ast):
+        super().__init__(files, name, uri, port, ast)
         self.raw_file = raw_file
         self.syntax = syntax
 
@@ -135,10 +224,10 @@ class HtmlPageBuilder(HtmlBuilder):
 
     # override getBody() method from HtmlBuilder
     def getBody(self):
-        body = "<body><div class='content'>"
+        body = "<body><div class='top-menu'><input type='text' placeholder='Search in code' id='search-input' /></div><div class='content' id='code-content'>"
         body += super().getNav()
         body += self.getSourceCodeFromFile()
-        body += "</div></body>"
+        body += "</div>"+super().getSearchFunction()+"</body>"
         return body
 
     def getSourceCodeFromFile(self):
