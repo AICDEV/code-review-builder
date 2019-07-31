@@ -7,7 +7,7 @@ from core import utils
 @click.option("--uri", help="uri from webserver. we need to generate clean links")
 @click.option("--src", help="src folder to server. example: src/**/*.ts")
 @click.option("--port", default=80, help="port from your webserver. default is 80")
-@click.option("--syntax", default=auto, help="syntax for code highlighting. example: typescript, python and much more")
+@click.option("--syntax", default="", help="syntax for code highlighting. example: typescript, python and much more")
 
 def run(uri, port, src, syntax):
 
