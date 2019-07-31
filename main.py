@@ -1,12 +1,13 @@
 import click
 import os
+from os.path import abspath
 from core import utils
 
 @click.command()
 @click.option("--uri", help="uri from webserver. we need to generate clean links")
 @click.option("--src", help="src folder to server. example: src/**/*.ts")
 @click.option("--port", default=80, help="port from your webserver. default is 80")
-@click.option("--syntax",help="syntax for code highlighting. example: typescript, python and much more")
+@click.option("--syntax", default=auto, help="syntax for code highlighting. example: typescript, python and much more")
 
 def run(uri, port, src, syntax):
 
@@ -22,9 +23,11 @@ def run(uri, port, src, syntax):
         os.makedirs(os.path.join(os.getcwd(),"out"))
 
 
+    filename = abspath(src)
+    print(filename)
     code_ast = []
 
-    reader = utils.DirReader(os.path.join(os.getcwd(), src))
+    reader = utils.DirReader(abspath(src))
     raw_files = reader.readDir()
 
     for raw_file in raw_files:
