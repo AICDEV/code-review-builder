@@ -34,15 +34,15 @@ Call examples:
 
 C
 ```text
-python3 main.py --uri http://localhost --src /src/**/*.c --port 8888 --syntax c
+python3 main.py --uri http://localhost --src "./src/**/*.c" --port 8888 --syntax c
 ```
 
 Typescript
 ```text
-python3 main.py --uri http://localhost --src /src/**/*.ts --port 8888 --syntax typescript
+python3 main.py --uri http://localhost --src "./src/**/*.ts" --port 8888 --syntax typescript
 ```
 
 Java
 ```text
-python3 main.py --uri http://localhost --src /src/**/*.java --port 8888 --syntax java
+python3 main.py --uri http://localhost --src "./src/**/*.java" --port 8888 --syntax java
 ```
