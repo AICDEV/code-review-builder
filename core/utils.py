@@ -4,10 +4,10 @@ import glob
 class DirReader():
 
     def __init__(self, dir):
-        self.dir = os.path.join(os.getcwd(), dir)
+        self.dir = dir
 
     def readDir(self):
-        return [f for f in glob.glob(self.dir, recursive=True)]
+        return [f for f in glob.glob(self.dir+"/**/*.*", recursive=True)]
 
     def readDirStripped(self):
         stripped_files = []
@@ -18,12 +18,12 @@ class DirReader():
 
 
 class HtmlBuilder():
-    def __init__(self, files, name, uri, port, ast):
+    def __init__(self, files, name, ast, src, dest):
         self.__files = files
         self.__name = name
-        self.__uri = uri
-        self.__port = port
         self.__ast = ast
+        self.__src = src
+        self.__dest = dest
 
     def getSearchFunction(self):
         return ("""<script>
@@ -202,15 +202,16 @@ class HtmlBuilder():
     def getNav(self):
         navstart = "<section class='navbar'><nav><ul>"
         for f in self.__files:
-            link = self.__uri+":"+str(self.__port)+"/"+f
-            navstart += "<li><a class='code-link' href="+link+".html>"+f+"</a></li>"
+            f = f.replace(self.__src, self.__dest)
+            name = f.rsplit(self.__dest)[1]
+            navstart += "<li><a class='code-link' href="+f+".html>.."+name+"</a></li>"
 
         navstart += "</ul></nav></section>"
         return navstart
 
 class HtmlPageBuilder(HtmlBuilder):
-    def __init__(self, files, name, raw_file, uri, port, syntax, ast):
-        super().__init__(files, name, uri, port, ast)
+    def __init__(self, files, name, raw_file, syntax, ast, src, dest):
+        super().__init__(files, name, ast, src, dest)
         self.raw_file = raw_file
         self.syntax = syntax
 
@@ -243,6 +244,7 @@ class HtmlPageBuilder(HtmlBuilder):
 
 def FileWriter(file, content):
     path = os.path.dirname(file)
+
     if not os.path.isdir(path):
         os.makedirs(path)
 

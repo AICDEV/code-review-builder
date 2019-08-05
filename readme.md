@@ -22,27 +22,20 @@ Preview:
 
 You have a few command line arguments to play with:
 
-- --uri url to host on a web server and to build the right working links
 - --src source folder to serve from
-- --port optional port for web server
+- --out destination folder to write output html
 - --syntax syntax highlighting. leave for autodetect.
 
-Output is in folder "out"
 
 Call examples:
 
 
-C
+Autodetect syntax
 ```text
-python3 main.py --uri http://localhost --src /src/**/*.c --port 8888 --syntax c
+python3 main.py  --src ../mimecraft/src  --out . 
 ```
 
 Typescript
 ```text
-python3 main.py --uri http://localhost --src /src/**/*.ts --port 8888 --syntax typescript
-```
-
-Java
-```text
-python3 main.py --uri http://localhost --src /src/**/*.java --port 8888 --syntax java
+python3 main.py  --src ../mimecraft/src  --out . --syntax typescript
 ```
