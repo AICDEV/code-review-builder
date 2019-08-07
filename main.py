@@ -29,7 +29,6 @@ def run(src, out, syntax):
 
     source_folder = abspath(src)
     destination_folder = os.path.join(abspath(out),"out")
-
     print("read sources from: " + source_folder)
 
     reader = utils.DirReader(source_folder)
