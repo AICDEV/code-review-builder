@@ -1,10 +1,11 @@
 import os
+from os.path import abspath
 import glob
 import jinja2
  
 class Templates():
     def __init__(self):
-        self.templateLoader = jinja2.FileSystemLoader(searchpath=os.path.join(os.getcwd(),"core/templates"))
+        self.templateLoader = jinja2.FileSystemLoader(searchpath=os.path.join(os.path.dirname(__file__),"templates"))
         self.templateEnv = jinja2.Environment(loader=self.templateLoader)
 
     def getTemplateForIndex(self, nav_object, name, ast):
